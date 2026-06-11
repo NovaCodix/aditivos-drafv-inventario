@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Plus } from 'lucide-react'
@@ -19,13 +20,13 @@ async function BomContent({ searchParams }: { searchParams: Awaited<PageProps['s
     <div className="rounded-xl border bg-card overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b bg-muted/40">
-            <th className="text-left p-3 font-semibold">Nombre</th>
-            <th className="text-left p-3 font-semibold">Producto</th>
-            <th className="text-left p-3 font-semibold">SKU</th>
-            <th className="text-left p-3 font-semibold">Versión</th>
-            <th className="text-left p-3 font-semibold">Output</th>
-            <th className="text-left p-3 font-semibold">Estado</th>
+          <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+            <th className="text-center p-3 font-semibold">Nombre</th>
+            <th className="text-center p-3 font-semibold">Producto</th>
+            <th className="text-center p-3 font-semibold">SKU</th>
+            <th className="text-center p-3 font-semibold">Versión</th>
+            <th className="text-center p-3 font-semibold">Output</th>
+            <th className="text-center p-3 font-semibold">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -51,9 +52,7 @@ async function BomContent({ searchParams }: { searchParams: Awaited<PageProps['s
           ))}
         </tbody>
       </table>
-      <div className="p-3 text-xs text-muted-foreground border-t">
-        {count} BOM{count !== 1 ? 's' : ''} en total
-      </div>
+      <DataTablePagination totalItems={count} />
     </div>
   )
 }

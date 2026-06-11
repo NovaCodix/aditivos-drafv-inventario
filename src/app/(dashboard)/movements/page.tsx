@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Plus, ArrowDown, ArrowUp, ArrowLeftRight, Sliders } from 'lucide-react'
@@ -21,21 +22,21 @@ async function MovementsContent() {
   const { data: movements } = await getInventoryMovements({ pageSize: 50 })
 
   return (
-    <Card>
+    <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0">
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Tipo</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Producto</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Almacén</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Lote</th>
-                <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Cantidad</th>
-                <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground hidden md:table-cell">Stock Antes</th>
-                <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground hidden md:table-cell">Stock Después</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Notas</th>
-                <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Fecha</th>
+              <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Tipo</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Producto</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Almacén</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Lote</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Cantidad</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Stock Antes</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Stock Después</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Notas</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Fecha</th>
               </tr>
             </thead>
             <tbody>
@@ -111,6 +112,9 @@ async function MovementsContent() {
             </tbody>
           </table>
         </div>
+      
+        {/* Pagination */}
+        <DataTablePagination totalItems={10} />
       </CardContent>
     </Card>
   )

@@ -1,7 +1,9 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Shield } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent } from '@/components/ui/card'
 import { getAuditLogs } from '@/modules/audit/services/audit.service'
 import { Badge } from '@/components/ui/badge'
 
@@ -27,16 +29,18 @@ async function AuditContent({ searchParams }: { searchParams: Awaited<PageProps[
   })
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b bg-muted/40">
-            <th className="text-left p-3 font-semibold">Tabla</th>
-            <th className="text-left p-3 font-semibold">Acción</th>
-            <th className="text-left p-3 font-semibold">Usuario</th>
-            <th className="text-left p-3 font-semibold">Fecha</th>
-            <th className="text-left p-3 font-semibold">Record ID</th>
-          </tr>
+    <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0">
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Tabla</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Acción</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Usuario</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Fecha</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Record ID</th>
+              </tr>
         </thead>
         <tbody>
           {logs.length === 0 ? (
@@ -58,10 +62,13 @@ async function AuditContent({ searchParams }: { searchParams: Awaited<PageProps[
               <td className="p-3 font-mono text-xs text-muted-foreground">{log.record_id.substring(0, 8)}…</td>
             </tr>
           ))}
-        </tbody>
-      </table>
-      <div className="p-3 text-xs text-muted-foreground border-t">{count} evento{count !== 1 ? 's' : ''} registrados</div>
-    </div>
+            </tbody>
+          </table>
+        </div>
+        {/* Pagination */}
+        <DataTablePagination totalItems={count} />
+      </CardContent>
+    </Card>
   )
 }
 

@@ -41,19 +41,13 @@ export default async function DashboardLayout({
         className="border-r border-sidebar-border/10"
       >
         {/* Sidebar Header — Logo */}
-        <SidebarHeader className="border-b border-sidebar-border/30 p-4 group-data-[state=collapsed]:p-2 transition-all duration-300">
-          <Link href="/dashboard" className="flex items-center gap-3 group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:gap-0 transition-all duration-300">
-            <div className="flex-shrink-0 w-8 h-8 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20">
-              <Package className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex flex-col leading-tight overflow-hidden transition-all duration-300 group-data-[state=collapsed]:opacity-0 group-data-[state=collapsed]:w-0 group-data-[state=collapsed]:pointer-events-none whitespace-nowrap">
-              <span className="font-bold text-white text-[13px] tracking-wide">
-                DRAFV INVENTARIO
-              </span>
-              <span className="text-sidebar-foreground/45 text-[10px] uppercase font-bold tracking-wider">
-                Aditivos
-              </span>
-            </div>
+        <SidebarHeader className="border-b border-sidebar-border/30 px-2 py-0 group-data-[state=collapsed]:p-2 transition-all duration-300 overflow-visible">
+          <Link href="/dashboard" className="flex items-center justify-center h-20 w-full transition-all duration-300">
+            <img 
+              src="/logo-drafv.webp" 
+              alt="DRAFV Inventario" 
+              className="h-full w-auto object-contain scale-150 origin-center transition-all duration-300 group-data-[state=collapsed]:w-8 group-data-[state=collapsed]:object-contain group-data-[state=collapsed]:scale-125" 
+            />
           </Link>
         </SidebarHeader>
 

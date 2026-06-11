@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   description: 'Sistema de inventario empresarial para aditivos de concreto',
   keywords: ['inventario', 'aditivos', 'concreto', 'almacén', 'kardex'],
   robots: 'noindex, nofollow', // Sistema interno
+  icons: {
+    icon: '/logo-drafv.webp',
+  },
 }
 
 export default function RootLayout({

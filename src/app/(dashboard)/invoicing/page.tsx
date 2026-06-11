@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { FileText, Plus } from 'lucide-react'
@@ -56,13 +57,13 @@ async function InvoicingContent({ searchParams }: { searchParams: Awaited<PagePr
       <div className="rounded-xl border bg-card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-muted/40">
-              <th className="text-left p-3 font-semibold">Número</th>
-              <th className="text-left p-3 font-semibold">Cliente</th>
-              <th className="text-left p-3 font-semibold">Estado</th>
-              <th className="text-left p-3 font-semibold">Emisión</th>
-              <th className="text-left p-3 font-semibold">Vencimiento</th>
-              <th className="text-right p-3 font-semibold">Total</th>
+            <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+              <th className="text-center p-3 font-semibold">Número</th>
+              <th className="text-center p-3 font-semibold">Cliente</th>
+              <th className="text-center p-3 font-semibold">Estado</th>
+              <th className="text-center p-3 font-semibold">Emisión</th>
+              <th className="text-center p-3 font-semibold">Vencimiento</th>
+              <th className="text-center p-3 font-semibold">Total</th>
             </tr>
           </thead>
           <tbody>
@@ -94,7 +95,7 @@ async function InvoicingContent({ searchParams }: { searchParams: Awaited<PagePr
             })}
           </tbody>
         </table>
-        <div className="p-3 text-xs text-muted-foreground border-t">{count} factura{count !== 1 ? 's' : ''} en total</div>
+        <DataTablePagination totalItems={count} />
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Plus, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -17,18 +18,18 @@ async function BatchesContent() {
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
 
   return (
-    <Card>
+    <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0">
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">N° Lote</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Producto</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Fabricación</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Vencimiento</th>
-                <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Cantidad</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Estado</th>
+              <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">N° Lote</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Producto</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Fabricación</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Vencimiento</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Cantidad</th>
+                <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -91,6 +92,9 @@ async function BatchesContent() {
             </tbody>
           </table>
         </div>
+      
+        {/* Pagination */}
+        <DataTablePagination totalItems={10} />
       </CardContent>
     </Card>
   )

@@ -162,7 +162,7 @@ async function DashboardContent() {
       {/* Charts + Movements */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Gráfico de movimientos */}
-        <Card className="xl:col-span-2 border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+        <Card className="xl:col-span-2 border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader className="border-b border-border/20 pb-4">
             <CardTitle className="text-base font-bold text-foreground">Movimientos de Inventario</CardTitle>
             <CardDescription className="text-xs">Entradas y salidas registradas en los últimos 14 días</CardDescription>
@@ -181,7 +181,7 @@ async function DashboardContent() {
         </Card>
 
         {/* Actividad diaria */}
-        <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+        <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader className="border-b border-border/20 pb-4">
             <CardTitle className="text-base font-bold text-foreground">Resumen de Actividad</CardTitle>
             <CardDescription className="text-xs">Indicadores de transacciones del día de hoy</CardDescription>
@@ -224,12 +224,13 @@ async function DashboardContent() {
                 </span>
               </div>
             </div>
-          </CardContent>
+          
+      </CardContent>
         </Card>
       </div>
 
       {/* Últimos movimientos */}
-      <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+      <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
         <CardHeader className="border-b border-border/20 pb-4">
           <CardTitle className="text-base font-bold text-foreground">Últimos Movimientos</CardTitle>
           <CardDescription className="text-xs">Registro en tiempo real de las últimas 10 transacciones del almacén</CardDescription>
@@ -247,12 +248,12 @@ async function DashboardContent() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border/40 bg-muted/20">
-                    <th className="text-left py-3.5 px-6 text-muted-foreground/75 font-semibold text-[10px] uppercase tracking-wider">Tipo</th>
-                    <th className="text-left py-3.5 px-6 text-muted-foreground/75 font-semibold text-[10px] uppercase tracking-wider">Producto (UUID)</th>
-                    <th className="text-right py-3.5 px-6 text-muted-foreground/75 font-semibold text-[10px] uppercase tracking-wider">Cantidad</th>
-                    <th className="text-left py-3.5 px-6 text-muted-foreground/75 font-semibold text-[10px] uppercase tracking-wider hidden md:table-cell">Notas</th>
-                    <th className="text-right py-3.5 px-6 text-muted-foreground/75 font-semibold text-[10px] uppercase tracking-wider">Fecha</th>
+                  <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+                    <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Tipo</th>
+                    <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Producto (UUID)</th>
+                    <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Cantidad</th>
+                    <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Notas</th>
+                    <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Fecha</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/25">
@@ -306,7 +307,7 @@ function DashboardSkeleton() {
         ))}
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <Card className="xl:col-span-2 rounded-2xl border-border/40">
+        <Card className="xl:col-span-2 rounded-2xl border-border/40 overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader>
             <Skeleton className="h-5 w-40" />
             <Skeleton className="h-4 w-56" />
@@ -315,7 +316,7 @@ function DashboardSkeleton() {
             <Skeleton className="h-60 w-full rounded-lg" />
           </CardContent>
         </Card>
-        <Card className="rounded-2xl border-border/40">
+        <Card className="rounded-2xl border-border/40 overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader>
             <Skeleton className="h-5 w-32" />
           </CardHeader>

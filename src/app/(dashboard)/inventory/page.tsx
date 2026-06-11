@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Plus, BarChart3, AlertTriangle, TrendingDown } from 'lucide-react'
@@ -30,7 +31,7 @@ async function InventoryContent() {
             <p className="text-2xl font-bold">{total}</p>
           </CardContent>
         </Card>
-        <Card className="card-glow-yellow">
+        <Card className="card-glow-yellow overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground">Stock Bajo</CardTitle>
             <AlertTriangle className="w-4 h-4 text-yellow-500" />
@@ -39,7 +40,7 @@ async function InventoryContent() {
             <p className="text-2xl font-bold text-yellow-600">{lowStock}</p>
           </CardContent>
         </Card>
-        <Card className="card-glow-red">
+        <Card className="card-glow-red overflow-hidden !p-0 gap-0 border-0 shadow-none">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground">Agotados</CardTitle>
             <TrendingDown className="w-4 h-4 text-red-500" />
@@ -51,19 +52,19 @@ async function InventoryContent() {
       </div>
 
       {/* Inventory Table */}
-      <Card>
+      <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/30">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">SKU</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Producto</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Almacén</th>
-                  <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Stock</th>
-                  <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Mínimo</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Estado</th>
-                  <th className="py-3 px-4"></th>
+                <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">SKU</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Producto</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Almacén</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Stock</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Mínimo</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Estado</th>
+                  <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300"></th>
                 </tr>
               </thead>
               <tbody>
@@ -112,7 +113,10 @@ async function InventoryContent() {
               </tbody>
             </table>
           </div>
-        </CardContent>
+        
+        {/* Pagination */}
+        <DataTablePagination totalItems={10} />
+      </CardContent>
       </Card>
     </div>
   )

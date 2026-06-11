@@ -1,3 +1,4 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Users, Plus } from 'lucide-react'
@@ -25,13 +26,13 @@ async function CustomersContent({ searchParams }: { searchParams: Awaited<PagePr
     <div className="rounded-xl border bg-card overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b bg-muted/40">
-            <th className="text-left p-3 font-semibold">Razón Social</th>
-            <th className="text-left p-3 font-semibold">RUC</th>
-            <th className="text-left p-3 font-semibold">Tipo</th>
-            <th className="text-left p-3 font-semibold">Contacto</th>
-            <th className="text-left p-3 font-semibold">Email</th>
-            <th className="text-left p-3 font-semibold">Crédito</th>
+          <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+            <th className="text-center p-3 font-semibold">Razón Social</th>
+            <th className="text-center p-3 font-semibold">RUC</th>
+            <th className="text-center p-3 font-semibold">Tipo</th>
+            <th className="text-center p-3 font-semibold">Contacto</th>
+            <th className="text-center p-3 font-semibold">Email</th>
+            <th className="text-center p-3 font-semibold">Crédito</th>
           </tr>
         </thead>
         <tbody>
@@ -57,9 +58,7 @@ async function CustomersContent({ searchParams }: { searchParams: Awaited<PagePr
           ))}
         </tbody>
       </table>
-      <div className="p-3 text-xs text-muted-foreground border-t">
-        {count} cliente{count !== 1 ? 's' : ''} en total
-      </div>
+      <DataTablePagination totalItems={count} />
     </div>
   )
 }
