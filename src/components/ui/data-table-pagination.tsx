@@ -37,8 +37,8 @@ export function DataTablePagination({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between px-4 md:px-6 py-4 bg-[#F4F7FB] dark:bg-slate-800/50 border-t border-border/30 gap-4 sm:gap-0">
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
+        <div className="flex items-center justify-center gap-2">
           <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400">
             Filas por página:
           </p>
@@ -67,7 +67,7 @@ export function DataTablePagination({
         </p>
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex flex-wrap justify-center items-center gap-1.5 mt-4 sm:mt-0 w-full sm:w-auto">
         <button 
           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
           disabled={currentPage === 1}

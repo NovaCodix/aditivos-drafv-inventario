@@ -194,8 +194,8 @@ export function ProductsTable({
   })
 
   return (
-    <Card className="bg-transparent border-0 shadow-none rounded-none !p-0 overflow-hidden">
-      <CardHeader className="pb-4 pt-5 px-4 md:px-6">
+    <Card className="bg-transparent border-0 shadow-none rounded-none !p-0 overflow-hidden w-full min-w-0">
+      <CardHeader className="pb-4 pt-5 px-4 md:px-6 w-full min-w-0">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
@@ -247,10 +247,20 @@ export function ProductsTable({
               </Select>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex gap-2">
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-9">Buscar</Button>
-              <Button variant="outline" className="flex-1 rounded-lg h-9"><X className="w-4 h-4 mr-2" /> Limpiar</Button>
+          <div className="flex flex-col sm:flex-row gap-3 mt-2 sm:mt-0">
+            <div className="flex-1 flex flex-col sm:flex-row gap-3 sm:gap-2">
+              {/* FORCE TURBOPACK UPDATE */}
+              <Button 
+                className="flex-1 gradient-primary text-white border-0"
+              >
+                Buscar
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1"
+              >
+                <X className="w-4 h-4 mr-2" /> Limpiar
+              </Button>
             </div>
             <div className="flex-1 hidden sm:block"></div>
             <div className="flex-1 hidden sm:block"></div>
@@ -266,8 +276,8 @@ export function ProductsTable({
               {totalCount} producto{totalCount !== 1 ? 's' : ''} encontrados
             </span>
           </div>
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="w-full max-w-[calc(100vw-3rem)] overflow-x-auto sm:max-w-full">
+            <Table className="min-w-[800px]">
               <TableHeader className="bg-[#F4F7FB] dark:bg-slate-800/50">
               {table.getHeaderGroups().map(headerGroup => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent border-b border-border/30">
@@ -314,8 +324,8 @@ export function ProductsTable({
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-[#F4F7FB] dark:bg-slate-800/50 border-t border-border/30 gap-4 sm:gap-0">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
+            <div className="flex items-center justify-center gap-2">
               <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400">
                 Filas por página:
               </p>
@@ -340,7 +350,7 @@ export function ProductsTable({
               Mostrando <span className="font-bold text-slate-700 dark:text-slate-200">{totalCount === 0 ? 0 : table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} - {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, totalCount)}</span> de <span className="font-bold text-slate-700 dark:text-slate-200">{totalCount}</span> registros
             </p>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap justify-center items-center gap-1.5 mt-4 sm:mt-0 w-full sm:w-auto">
               <Button
                 variant="ghost"
                 size="icon"

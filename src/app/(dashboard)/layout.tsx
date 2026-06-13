@@ -68,9 +68,9 @@ export default async function DashboardLayout({
       </Sidebar>
 
       {/* Main Content */}
-      <SidebarInset className="bg-background">
+      <SidebarInset className="bg-background flex-1 min-w-0 w-full max-w-[100vw] overflow-x-hidden">
         <AppHeader user={profile as Profile | null} />
-        <main className="flex-1 p-4 lg:p-6 xl:p-8 animate-fade-in w-full">
+        <main className="flex-1 p-4 lg:p-6 xl:p-8 animate-fade-in w-full min-w-0 max-w-[100vw] overflow-x-hidden">
           {children}
         </main>
       </SidebarInset>

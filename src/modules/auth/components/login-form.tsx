@@ -44,24 +44,22 @@ export function LoginForm() {
 
   return (
     <div className="animate-slide-up w-full">
-      {/* Logo Fuera del Formulario (Arriba) */}
-      <div className="flex justify-center -mb-2 drop-shadow-lg relative z-10">
-        <Image 
-          src="/logo-drafv.webp" 
-          alt="DRAFV Logo" 
-          width={200} 
-          height={80} 
-          className="object-contain"
-          priority
-        />
-      </div>
-
       {/* Tarjeta del Formulario Blanca */}
-      <div className="bg-white border-0 rounded-[24px] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+      <div className="bg-white border-0 rounded-[24px] px-8 py-6 sm:px-10 sm:py-8 shadow-2xl relative overflow-hidden">
         
-        {/* Títulos */}
-        <div className="text-center mb-8">
-          <h1 className="text-[22px] font-black tracking-wide text-slate-900 mb-3 uppercase">
+        {/* Logo y Títulos */}
+        <div className="text-center mb-6">
+          <div className="flex justify-center -mt-6 sm:-mt-8 mb-0">
+            <Image 
+              src="/logo-drafv.webp" 
+              alt="DRAFV Logo" 
+              width={140} 
+              height={56} 
+              className="object-contain drop-shadow-sm"
+              priority
+            />
+          </div>
+          <h1 className="text-[22px] font-black tracking-wide text-slate-900 mb-3 uppercase -mt-3">
             APP INVENTARIO
           </h1>
           <h2 className="text-base font-bold text-slate-800 mb-1.5">
@@ -72,7 +70,7 @@ export function LoginForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Campo: Usuario */}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-bold text-slate-600 ml-1">
@@ -81,7 +79,7 @@ export function LoginForm() {
             <Input
               id="email"
               type="text"
-              placeholder="JCARLOS"
+              placeholder="ejemplo@gmail.com"
               autoComplete="username"
               className="h-11 rounded-lg border-slate-300 text-sm focus:ring-2 focus:ring-slate-400 placeholder:text-slate-400 font-medium text-slate-700 bg-white"
               {...register('email')}
@@ -120,7 +118,7 @@ export function LoginForm() {
           </div>
 
           {/* Recordarme */}
-          <div className="flex items-center space-x-2 pt-1 pb-4">
+          <div className="flex items-center space-x-2 pt-1 pb-3">
             <Checkbox id="remember" className="rounded-sm border-slate-400 data-[state=checked]:bg-slate-600 data-[state=checked]:border-slate-600" />
             <label
               htmlFor="remember"

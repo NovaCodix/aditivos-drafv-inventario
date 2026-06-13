@@ -20,9 +20,10 @@ export default async function UnitMeasuresPage() {
         </Button>
       }
     >
-      <div className="overflow-x-auto">
+      <div className="w-full min-w-0 flex flex-col">
         <div className="px-4 md:px-6 pt-2 pb-4">
-        <table className="w-full text-sm">
+        <div className="w-full max-w-[calc(100vw-3rem)] overflow-x-auto sm:max-w-full">
+          <table className="w-full text-sm min-w-[800px]">
           <thead>
             <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
             <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">#</th>
@@ -64,6 +65,7 @@ export default async function UnitMeasuresPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
       {/* Pagination */}
       <DataTablePagination totalItems={unitMeasures.length} />

@@ -33,6 +33,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '@/components/ui/sidebar'
 
 type NavItem = {
@@ -150,6 +151,7 @@ const adminNavItems: NavItem[] = [
 
 function NavItemComponent({ item }: { item: NavItem }) {
   const pathname = usePathname()
+  const { setOpenMobile, isMobile } = useSidebar()
   const [isOpen, setIsOpen] = useState(() => {
     if (item.children) {
       return item.children.some(child => pathname === child.href || pathname.startsWith(child.href + '/'))
@@ -192,6 +194,9 @@ function NavItemComponent({ item }: { item: NavItem }) {
                 return (
                   <SidebarMenuSubItem key={child.href}>
                     <SidebarMenuSubButton
+                      onClick={() => {
+                        if (isMobile) setOpenMobile(false)
+                      }}
                       render={<Link href={child.href} />}
                       isActive={childActive}
                       className={cn(
@@ -215,6 +220,9 @@ function NavItemComponent({ item }: { item: NavItem }) {
   return (
     <SidebarMenuItem className="mb-0.5">
       <SidebarMenuButton
+        onClick={() => {
+          if (isMobile) setOpenMobile(false)
+        }}
         render={<Link href={item.href!} className="flex items-center gap-2.5" />}
         isActive={isActive}
         className={cn(

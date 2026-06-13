@@ -136,16 +136,16 @@ export function PageShell({
   const internalLabel = getInternalLabel(segments)
 
   return (
-    <div className={cn('space-y-3', className)}>
+    <div className={cn('space-y-3 w-full max-w-full overflow-hidden', className)}>
 
       {/* ── Cabecera exterior (título izq. + breadcrumb der.) ── */}
-      <div className="flex items-center justify-between px-2">
-        <h1 className="text-xl font-bold tracking-tight text-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-2 gap-2 sm:gap-0 items-start">
+        <h1 className="text-xl font-bold tracking-tight text-foreground truncate w-full sm:w-auto">
           {pageTitle}
         </h1>
 
         {/* Breadcrumb (solo derecha, sin botón aquí) */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-[11px] text-muted-foreground/70 font-medium">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-[11px] text-muted-foreground/70 font-medium overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-hide">
           {breadcrumbs.map((crumb, idx) => {
             const isLast = idx === breadcrumbs.length - 1
             return (
@@ -185,7 +185,7 @@ export function PageShell({
       </div>
 
       {/* ── Área blanca (card con cabecera interna + filtros + tabla) ── */}
-      <div className="bg-white dark:bg-card rounded-2xl border border-border/40 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-card rounded-2xl border border-border/40 shadow-sm overflow-hidden w-full min-w-0">
 
         {/* Cabecera interna: "Listar" / "Registrar" / "Editar"  +  botón de acción */}
         <div className="flex items-center justify-between px-4 md:px-6 py-4">
