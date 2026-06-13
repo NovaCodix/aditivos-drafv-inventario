@@ -163,7 +163,7 @@ async function DashboardContent() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Gráfico de movimientos */}
         <Card className="xl:col-span-2 border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
-          <CardHeader className="border-b border-border/20 pb-4">
+          <CardHeader className="border-b border-border/20 pt-6 px-6 pb-4">
             <CardTitle className="text-base font-bold text-foreground">Movimientos de Inventario</CardTitle>
             <CardDescription className="text-xs">Entradas y salidas registradas en los últimos 14 días</CardDescription>
           </CardHeader>
@@ -182,7 +182,7 @@ async function DashboardContent() {
 
         {/* Actividad diaria */}
         <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
-          <CardHeader className="border-b border-border/20 pb-4">
+          <CardHeader className="border-b border-border/20 pt-6 px-6 pb-4">
             <CardTitle className="text-base font-bold text-foreground">Resumen de Actividad</CardTitle>
             <CardDescription className="text-xs">Indicadores de transacciones del día de hoy</CardDescription>
           </CardHeader>
@@ -231,7 +231,7 @@ async function DashboardContent() {
 
       {/* Últimos movimientos */}
       <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
-        <CardHeader className="border-b border-border/20 pb-4">
+        <CardHeader className="border-b border-border/20 pt-6 px-6 pb-4">
           <CardTitle className="text-base font-bold text-foreground">Últimos Movimientos</CardTitle>
           <CardDescription className="text-xs">Registro en tiempo real de las últimas 10 transacciones del almacén</CardDescription>
         </CardHeader>

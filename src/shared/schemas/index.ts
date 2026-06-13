@@ -152,7 +152,7 @@ export type RoleFormValues = z.infer<typeof roleSchema>
 
 // --- Login ---
 export const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
+  email: z.string().min(1, 'El usuario es requerido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 })
 

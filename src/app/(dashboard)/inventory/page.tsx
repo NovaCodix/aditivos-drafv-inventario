@@ -32,7 +32,7 @@ async function InventoryContent() {
             <p className="text-2xl font-bold">{total}</p>
           </CardContent>
         </Card>
-        <Card className="card-glow-yellow overflow-hidden !p-0 gap-0 border-0 shadow-none">
+        <Card className="card-glow-yellow overflow-hidden gap-0 border-0 shadow-none">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground">Stock Bajo</CardTitle>
             <AlertTriangle className="w-4 h-4 text-yellow-500" />
@@ -41,7 +41,7 @@ async function InventoryContent() {
             <p className="text-2xl font-bold text-yellow-600">{lowStock}</p>
           </CardContent>
         </Card>
-        <Card className="card-glow-red overflow-hidden !p-0 gap-0 border-0 shadow-none">
+        <Card className="card-glow-red overflow-hidden gap-0 border-0 shadow-none">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground">Agotados</CardTitle>
             <TrendingDown className="w-4 h-4 text-red-500" />
