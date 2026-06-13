@@ -12,7 +12,7 @@ import {
   type SortingState,
   type ColumnFiltersState,
 } from '@tanstack/react-table'
-import { Search, ArrowUpDown, Eye, Pencil, Package, ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { Search, ArrowUpDown, Eye, Pencil, Package, ChevronLeft, ChevronRight, MoreHorizontal, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -65,6 +65,13 @@ export function ProductsTable({
   const [globalFilter, setGlobalFilter] = useState('')
 
   const columns: ColumnDef<ProductWithRelations>[] = useMemo(() => [
+    {
+      id: 'index',
+      header: '#',
+      cell: ({ row }) => (
+        <span className="font-medium text-xs text-muted-foreground text-center block w-full">{row.index + 1}</span>
+      ),
+    },
     {
       accessorKey: 'sku',
       header: ({ column }) => (
@@ -165,10 +172,8 @@ export function ProductsTable({
           <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
             <Eye className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" asChild>
-            <a href={`/products/${row.original.id}/edit`}>
-              <Pencil className="w-4 h-4" />
-            </a>
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" render={<a href={`/products/${row.original.id}/edit`} />}>
+            <Pencil className="w-4 h-4" />
           </Button>
         </div>
       ),
@@ -189,63 +194,81 @@ export function ProductsTable({
   })
 
   return (
-    <Card className="border border-border/40 bg-card/65 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden !p-0 gap-0 border-0 shadow-none">
-      <CardHeader className="pb-4 pt-5 border-b border-border/20">
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
-            <Input
-              id="products-search"
-              placeholder="Buscar por nombre, SKU o código..."
-              value={globalFilter}
-              onChange={e => setGlobalFilter(e.target.value)}
-              className="pl-9 h-10 w-full text-xs rounded-xl bg-background/50 border-border/60 focus:bg-background focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/50"
-            />
-          </div>
+    <Card className="bg-transparent border-0 shadow-none rounded-none !p-0 overflow-hidden">
+      <CardHeader className="pb-4 pt-5 px-4 md:px-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Search */}
+            <div className="relative flex-1 space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground ml-1">Búsqueda de productos</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
+                <Input
+                  id="products-search"
+                  placeholder="Buscar por nombre, SKU o código..."
+                  value={globalFilter}
+                  onChange={e => setGlobalFilter(e.target.value)}
+                  className="pl-9 w-full text-xs rounded-lg bg-background/50 border-border/60 focus:bg-background focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground/50"
+                />
+              </div>
+            </div>
 
-          {/* Category filter */}
-          <div className="flex-1">
-            <Select>
-              <SelectTrigger className="h-10 w-full text-xs rounded-xl bg-background/50 border-border/60" id="products-category-filter">
-                <SelectValue placeholder="Categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(cat => (
-                  <SelectItem key={cat.id} value={cat.id} className="text-xs cursor-pointer">
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Category filter */}
+            <div className="flex-1 space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground ml-1">Elige una categoría</label>
+              <Select>
+                <SelectTrigger className="w-full text-xs rounded-lg bg-background/50 border-border/60" id="products-category-filter">
+                  <SelectValue placeholder="Filtrar por Categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(cat => (
+                    <SelectItem key={cat.id} value={cat.id} className="text-xs cursor-pointer">
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          {/* Brand filter */}
-          <div className="flex-1">
-            <Select>
-              <SelectTrigger className="h-10 w-full text-xs rounded-xl bg-background/50 border-border/60" id="products-brand-filter">
-                <SelectValue placeholder="Marca" />
-              </SelectTrigger>
-              <SelectContent>
-                {brands.map(brand => (
-                  <SelectItem key={brand.id} value={brand.id} className="text-xs cursor-pointer">
-                    {brand.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Brand filter */}
+            <div className="flex-1 space-y-1.5">
+              <label className="text-xs font-semibold text-muted-foreground ml-1">Elige una marca</label>
+              <Select>
+                <SelectTrigger className="w-full text-xs rounded-lg bg-background/50 border-border/60" id="products-brand-filter">
+                  <SelectValue placeholder="Filtrar por Marca" />
+                </SelectTrigger>
+                <SelectContent>
+                  {brands.map(brand => (
+                    <SelectItem key={brand.id} value={brand.id} className="text-xs cursor-pointer">
+                      {brand.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-
-          <div className="text-xs font-bold text-muted-foreground/75 flex items-center whitespace-nowrap uppercase tracking-wider ml-auto">
-            {totalCount} producto{totalCount !== 1 ? 's' : ''}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1 flex gap-2">
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-9">Buscar</Button>
+              <Button variant="outline" className="flex-1 rounded-lg h-9"><X className="w-4 h-4 mr-2" /> Limpiar</Button>
+            </div>
+            <div className="flex-1 hidden sm:block"></div>
+            <div className="flex-1 hidden sm:block"></div>
+            <div className="flex-1 hidden sm:block"></div>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-[#F4F7FB] dark:bg-slate-800/50">
+        <div className="px-4 md:px-6 pt-2 pb-4">
+          <div className="flex justify-end mb-3">
+            <span className="text-[11px] font-bold text-muted-foreground/75 uppercase tracking-wider">
+              {totalCount} producto{totalCount !== 1 ? 's' : ''} encontrados
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-[#F4F7FB] dark:bg-slate-800/50">
               {table.getHeaderGroups().map(headerGroup => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent border-b border-border/30">
                   {headerGroup.headers.map(header => (
@@ -285,7 +308,8 @@ export function ProductsTable({
                 ))
               )}
             </TableBody>
-          </Table>
+            </Table>
+          </div>
         </div>
 
         {/* Pagination */}

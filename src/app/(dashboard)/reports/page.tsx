@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { FileBarChart, TrendingUp, Package, Truck } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import Link from 'next/link'
+import { PageShell } from '@/shared/components/layout/page-shell'
 
 export const metadata: Metadata = { title: 'Reportes' }
 
@@ -46,15 +47,8 @@ const reports = [
 
 export default function ReportsPage() {
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Reportes</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Reportes y análisis del sistema de inventario
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <PageShell>
+      <div className="page-content grid grid-cols-1 md:grid-cols-2 gap-4">
         {reports.map(report => (
           <Link key={report.id} href={report.href}>
             <Card
@@ -80,6 +74,6 @@ export default function ReportsPage() {
           </Link>
         ))}
       </div>
-    </div>
+    </PageShell>
   )
 }

@@ -1,20 +1,14 @@
 import type { Metadata } from 'next'
 import { Settings as SettingsIcon, Building2, Globe, DollarSign, Clock } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { PageShell } from '@/shared/components/layout/page-shell'
 
 export const metadata: Metadata = { title: 'Configuración' }
 
 export default function SettingsPage() {
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Configuración</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Configuración general del sistema de inventario
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <PageShell>
+      <div className="page-content grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Company Info */}
         <Card id="company-settings">
           <CardHeader>
@@ -93,6 +87,6 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageShell>
   )
 }

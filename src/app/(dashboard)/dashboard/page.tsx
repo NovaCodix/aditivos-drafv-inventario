@@ -246,9 +246,11 @@ async function DashboardContent() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <div className="px-4 md:px-6 pt-2 pb-4">
+        <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+            <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">#</th>
                     <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Tipo</th>
                     <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Producto (UUID)</th>
                     <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Cantidad</th>
@@ -257,11 +259,12 @@ async function DashboardContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/25">
-                  {stats.recentMovements.map(movement => (
+                  {stats.recentMovements.map((movement, index) => (
                     <tr
                       key={movement.id}
                       className="hover:bg-muted/30 transition-all duration-200"
                     >
+                <td className="py-3 px-4 text-center font-medium text-xs text-muted-foreground">{index + 1}</td>
                       <td className="py-3.5 px-6">
                         <MovementTypeBadge type={movement.movement_type} />
                       </td>
@@ -281,6 +284,7 @@ async function DashboardContent() {
                   ))}
                 </tbody>
               </table>
+      </div>
             </div>
           )}
         </CardContent>

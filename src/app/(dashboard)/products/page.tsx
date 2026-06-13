@@ -9,6 +9,7 @@ import { getBrands } from '@/modules/brands/services/brands.service'
 import { getUnitMeasures } from '@/modules/unit-measures/services/unit-measures.service'
 import { ProductsTable } from '@/modules/products/components/products-table'
 import { RequirePermission } from '@/shared/components/auth/require-permission'
+import { PageShell } from '@/shared/components/layout/page-shell'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -56,26 +57,19 @@ async function ProductsContent({ searchParams }: { searchParams: Awaited<Product
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams
   return (
-    <div>
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Productos</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Gestión del catálogo de aditivos de concreto
-          </p>
-        </div>
+    <PageShell
+      registerButton={
         <RequirePermission module="PRODUCTS" action="CREATE">
           <Button render={<Link href="/products/new" />} id="create-product-btn" className="gradient-primary text-white border-0">
-              <Plus className="w-4 h-4 mr-2" />
-              Nuevo Producto
+            <Plus className="w-4 h-4 mr-2" />
+            Nuevo Producto
           </Button>
         </RequirePermission>
-      </div>
-
+      }
+    >
       <Suspense fallback={<Skeleton className="h-96 w-full rounded-xl" />}>
         <ProductsContent searchParams={params} />
       </Suspense>
-    </div>
+    </PageShell>
   )
 }

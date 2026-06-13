@@ -266,6 +266,32 @@
   .card-glow-red:hover {
     box-shadow: 0 12px 32px -4px oklch(0.55 0.22 27 / 8%), 0 0 1px 1.5px oklch(0.55 0.22 27 / 24%);
   }
+
+  /* ── Filtros uniformes ──────────────────────────────────────────────
+     Aplica a inputs y selects dentro de secciones de filtros.
+     Garantiza que todos los campos de filtro tengan la misma altura
+     y apariencia, sin importar si son <input> o <select> (SelectTrigger).
+  ─────────────────────────────────────────────────────────────────── */
+  .filter-row {
+    @apply grid grid-cols-1 gap-3;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-row input,
+  .filter-row [role="combobox"],
+  .filter-row button[data-slot="select-trigger"] {
+    @apply h-11 text-xs rounded-lg;
+  }
+
+  /* Clase que normaliza altura para SelectTrigger y Input por igual */
+  .field-uniform {
+    @apply h-11 w-full text-xs rounded-lg bg-background/60 border-border/60;
+  }
+
+  /* Contenido de página con padding (para páginas sin tablas full-width) */
+  .page-content {
+    @apply px-6 py-5;
+  }
 }
 
 @keyframes fadeIn {

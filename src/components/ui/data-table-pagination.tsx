@@ -36,7 +36,7 @@ export function DataTablePagination({
   const endItem = Math.min(totalItems, currentPage * pageSize)
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-[#F4F7FB] dark:bg-slate-800/50 border-t border-border/30 gap-4 sm:gap-0">
+    <div className="flex flex-col sm:flex-row items-center justify-between px-4 md:px-6 py-4 bg-[#F4F7FB] dark:bg-slate-800/50 border-t border-border/30 gap-4 sm:gap-0">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400">

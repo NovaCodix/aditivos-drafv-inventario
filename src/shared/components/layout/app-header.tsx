@@ -26,10 +26,10 @@ interface AppHeaderProps {
 const translateSegment = (segment: string) => {
   const dictionary: Record<string, string> = {
     dashboard: 'Dashboard',
-    products: 'Productos',
+    products: 'Catálogo',
     categories: 'Categorías',
     brands: 'Marcas',
-    'unit-measures': 'Unidades',
+    'unit-measures': 'Unidades de Medida',
     warehouses: 'Almacenes',
     locations: 'Ubicaciones',
     suppliers: 'Proveedores',
@@ -37,9 +37,21 @@ const translateSegment = (segment: string) => {
     roles: 'Roles',
     reports: 'Reportes',
     settings: 'Configuración',
-    movements: 'Movimientos',
+    movements: 'Movimientos (Kardex)',
     batches: 'Lotes',
-    inventory: 'Inventario',
+    inventory: 'Stock Actual',
+    customers: 'Clientes',
+    purchases: 'Órdenes de Compra',
+    sales: 'Órdenes de Venta',
+    manufacturing: 'Manufactura',
+    'bill-of-materials': 'Listas de Materiales',
+    'production-orders': 'Órdenes de Producción',
+    invoicing: 'Facturación',
+    audit: 'Auditoría',
+    // Acciones
+    new: 'Registrar',
+    edit: 'Editar',
+    view: 'Ver',
   }
   return dictionary[segment] || segment
 }
@@ -69,29 +81,10 @@ export function AppHeader({ user }: AppHeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/40 bg-background/80 backdrop-blur-md px-4 lg:px-6">
+    <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/40 bg-white dark:bg-card px-4 lg:px-6">
       <div className="flex items-center gap-3">
         {/* Sidebar trigger */}
         <SidebarTrigger className="-ml-1 text-foreground/80 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer" id="sidebar-trigger" />
-
-        {/* Breadcrumbs */}
-        <div className="hidden md:flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground/80">
-          <span className="hover:text-foreground transition-colors cursor-pointer">DRAFV</span>
-          {pathSegments.map((segment, index) => {
-            const isLast = index === pathSegments.length - 1
-            const translated = translateSegment(segment)
-            return (
-              <div key={segment} className="flex items-center gap-1.5">
-                <span className="text-[9px] opacity-40 font-bold">/</span>
-                {isLast ? (
-                  <span className="text-foreground font-semibold">{translated}</span>
-                ) : (
-                  <span className="hover:text-foreground transition-colors cursor-pointer">{translated}</span>
-                )}
-              </div>
-            )
-          })}
-        </div>
 
         {/* Logo (visible en mobile) */}
         <div className="flex items-center gap-2 lg:hidden">

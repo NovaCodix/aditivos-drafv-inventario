@@ -3,6 +3,7 @@ import { Shield } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/shared/lib/supabase/server'
+import { PageShell } from '@/shared/components/layout/page-shell'
 
 export const metadata: Metadata = { title: 'Roles y Permisos' }
 
@@ -21,15 +22,8 @@ export default async function RolesPage() {
   const roles = data as any[]
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Roles y Permisos</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Control de acceso basado en roles (RBAC)
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <PageShell>
+      <div className="page-content grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {(roles || []).map(role => {
           const permissions = (role as { role_permissions: { permission: { module: string; action: string } }[] }).role_permissions || []
           const modules = [...new Set(permissions.map(p => p.permission.module))]
@@ -72,6 +66,6 @@ export default async function RolesPage() {
           )
         })}
       </div>
-    </div>
+    </PageShell>
   )
 }

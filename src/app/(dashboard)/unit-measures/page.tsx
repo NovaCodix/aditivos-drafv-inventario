@@ -1,9 +1,10 @@
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import type { Metadata } from 'next'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { getUnitMeasures } from '@/modules/unit-measures/services/unit-measures.service'
+import { PageShell } from '@/shared/components/layout/page-shell'
 
 export const metadata: Metadata = { title: 'Unidades de Medida' }
 
@@ -11,43 +12,62 @@ export default async function UnitMeasuresPage() {
   const unitMeasures = await getUnitMeasures()
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Unidades de Medida</h1>
-          <p className="text-muted-foreground text-sm mt-1">Unidades de medida para productos</p>
-        </div>
+    <PageShell
+      registerButton={
         <Button id="create-unit-btn" className="gradient-primary text-white border-0">
           <Plus className="w-4 h-4 mr-2" />
           Nueva Unidad
         </Button>
+      }
+    >
+      <div className="overflow-x-auto">
+        <div className="px-4 md:px-6 pt-2 pb-4">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border/30 bg-[#F4F7FB] dark:bg-slate-800/50">
+            <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">#</th>
+              <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Abreviatura</th>
+              <th className="text-left py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Nombre</th>
+              <th className="text-left py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Descripción</th>
+              <th className="text-center py-3.5 px-6 text-[11px] uppercase font-bold tracking-wider text-slate-600 dark:text-slate-300">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unitMeasures.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center py-12 text-muted-foreground text-sm">
+                  No hay unidades de medida registradas
+                </td>
+              </tr>
+            ) : (
+              unitMeasures.map((um, index) => (
+                <tr
+                  key={um.id}
+                  className="border-b border-border/50 hover:bg-muted/30 transition-colors"
+                  id={`unit-${um.id}`}
+                >
+                <td className="py-3 px-4 text-center font-medium text-xs text-muted-foreground">{index + 1}</td>
+                  <td className="py-3 px-6 text-center">
+                    <span className="font-mono text-base font-bold text-primary">{um.abbreviation}</span>
+                  </td>
+                  <td className="py-3 px-6 font-medium text-sm">{um.name}</td>
+                  <td className="py-3 px-6 text-xs text-muted-foreground">
+                    {um.description || '—'}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    <Badge variant={um.is_active ? 'default' : 'secondary'} className="text-[10px]">
+                      {um.is_active ? 'Activa' : 'Inactiva'}
+                    </Badge>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        {unitMeasures.map(um => (
-          <Card
-            key={um.id}
-            className="text-center hover:shadow-md transition-all hover:border-primary/30"
-            id={`unit-${um.id}`}
-          >
-            <CardContent className="pt-5 pb-4">
-              <div className="text-3xl font-bold text-primary mb-2 font-mono">
-                {um.abbreviation}
-              </div>
-              <p className="text-xs font-medium">{um.name}</p>
-              {um.description && (
-                <p className="text-[10px] text-muted-foreground mt-1">{um.description}</p>
-              )}
-              <Badge
-                variant={um.is_active ? 'default' : 'secondary'}
-                className="text-[10px] mt-2"
-              >
-                {um.is_active ? 'Activa' : 'Inactiva'}
-              </Badge>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Pagination */}
+      <DataTablePagination totalItems={unitMeasures.length} />
     </div>
+    </PageShell>
   )
 }
