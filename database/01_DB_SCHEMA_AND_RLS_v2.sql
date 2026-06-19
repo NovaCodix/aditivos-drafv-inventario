@@ -2,6 +2,27 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "unaccent";
 
+CREATE OR REPLACE FUNCTION public.fn_create_profile_for_new_user()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, is_active)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', SPLIT_PART(NEW.email, '@', 1)),
+    TRUE
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_auth_create_profile ON auth.users;
+
+CREATE TRIGGER trg_auth_create_profile
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.fn_create_profile_for_new_user();
+
 CREATE OR REPLACE FUNCTION public.fn_update_timestamp()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
