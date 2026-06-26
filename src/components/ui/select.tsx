@@ -116,6 +116,7 @@ function SelectContent({
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={e => e.stopPropagation()} 
+              suppressHydrationWarning
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground h-8"
             />
           </div>

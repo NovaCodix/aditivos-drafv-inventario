@@ -57,9 +57,14 @@ $$;
 CREATE OR REPLACE FUNCTION public.fn_prevent_delete()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-  IF current_user = 'supabase_admin' THEN
+  IF current_user IN ('supabase_admin', 'postgres', 'service_role') THEN
     RETURN OLD;
   END IF;
+
+  IF current_setting('role', true) = 'service_role' THEN
+    RETURN OLD;
+  END IF;
+
   RAISE EXCEPTION 'Eliminación física no permitida. Use eliminación lógica actualizando deleted_at.';
 END;
 $$;
