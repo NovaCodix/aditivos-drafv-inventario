@@ -83,6 +83,7 @@ export async function getSalesOrders(filters: SalesOrderFilters = {}) {
 
   const { data, error, count } = await query
   if (error) throw new Error(error.message)
+
   return { data: (data || []) as SalesOrderView[], count: count || 0 }
 }
 
@@ -102,6 +103,7 @@ export async function getSalesOrderById(id: string) {
   ])
 
   if (orderResult.error) return null
+
   return {
     order: orderResult.data as SalesOrder & { customer: any; warehouse: any },
     details: (detailsResult.data || []) as Array<SalesOrderDetail & { product: any }>,
@@ -133,6 +135,7 @@ export async function createSalesOrder(
 
 export async function updateSalesOrderStatus(id: string, status: string) {
   const supabase = await createClient()
+
   const { data, error } = await supabase
     .from('sales_orders')
     .update({ status } as any)
@@ -140,6 +143,7 @@ export async function updateSalesOrderStatus(id: string, status: string) {
     .select()
     .single()
   if (error) throw new Error(error.message)
+
   return data as SalesOrder
 }
 
@@ -174,7 +178,6 @@ export async function createDelivery(
     .single()
   if (error) throw new Error(error.message)
 
-  // Register Kardex EXIT for each item
   const deliveryItems = []
   for (const item of items) {
     const movementId = await registerMovement({

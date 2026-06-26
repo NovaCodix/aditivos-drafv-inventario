@@ -38,6 +38,7 @@ export async function getPurchaseOrders(filters: PurchaseOrderFilters = {}) {
 
   const { data, error, count } = await query
   if (error) throw new Error(error.message)
+
   return { data: (data || []) as PurchaseOrderView[], count: count || 0 }
 }
 
@@ -57,6 +58,7 @@ export async function getPurchaseOrderById(id: string) {
   ])
 
   if (orderResult.error) return null
+
   return {
     order: orderResult.data as PurchaseOrder & { supplier: any },
     details: (detailsResult.data || []) as Array<PurchaseOrderDetail & { product: any }>,
@@ -69,7 +71,6 @@ export async function createPurchaseOrder(
 ) {
   const supabase = await createClient()
 
-  // Generate code via RPC
   const { data: code, error: codeError } = await supabase.rpc('next_document_code', { p_module: 'purchase_orders' })
   if (codeError) throw new Error(codeError.message)
 
@@ -91,6 +92,7 @@ export async function createPurchaseOrder(
 
 export async function updatePurchaseOrderStatus(id: string, status: string, approvedBy?: string) {
   const supabase = await createClient()
+
   const updateData: any = { status }
   if (approvedBy) {
     updateData.approved_by = approvedBy
@@ -103,6 +105,7 @@ export async function updatePurchaseOrderStatus(id: string, status: string, appr
     .select()
     .single()
   if (error) throw new Error(error.message)
+
   return data as PurchaseOrder
 }
 
@@ -132,15 +135,13 @@ export async function createGoodsReceipt(
   const { data: code, error: codeError } = await supabase.rpc('next_document_code', { p_module: 'goods_receipts' })
   if (codeError) throw new Error(codeError.message)
 
-  // Create goods receipt
   const { data: receipt, error } = await supabase
     .from('goods_receipts')
-    .insert({ ...dto, code, status: 'COMPLETE' } as any)
+    .insert({ ...dto, code, status: 'COMPLETED' } as any)
     .select()
     .single()
   if (error) throw new Error(error.message)
 
-  // Register Kardex ENTRY for each item and create receipt items
   const receiptItems = []
   for (const item of items) {
     const movementId = await registerMovement({
@@ -166,15 +167,13 @@ export async function createGoodsReceipt(
       movement_id: movementId,
     })
 
-    // Update quantity_received on purchase_order_detail
     if (item.purchase_order_detail_id) {
       try {
         await supabase.rpc('rpc_update_pod_received' as any, {
           p_detail_id: item.purchase_order_detail_id,
           p_qty: item.quantity_received,
         })
-      } catch { /* ignore – fallback below */ }
-      // Fallback: direct update
+      } catch { /* ignore */ }
       await supabase
         .from('purchase_order_details')
         .update({ quantity_received: item.quantity_received } as any)

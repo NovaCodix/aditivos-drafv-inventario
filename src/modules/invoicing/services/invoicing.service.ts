@@ -31,6 +31,7 @@ export async function getInvoices(filters: InvoiceFilters = {}) {
 
   const { data, error, count } = await query
   if (error) throw new Error(error.message)
+
   return { data: (data || []) as InvoiceView[], count: count || 0 }
 }
 
@@ -50,6 +51,7 @@ export async function getInvoiceById(id: string) {
   ])
 
   if (invoiceResult.error) return null
+
   return {
     invoice: invoiceResult.data as Invoice & { customer: any },
     details: (detailsResult.data || []) as InvoiceDetail[],
@@ -80,6 +82,7 @@ export async function createInvoice(
 
 export async function updateInvoiceStatus(id: string, status: string, paidAt?: string) {
   const supabase = await createClient()
+
   const updateData: any = { status }
   if (paidAt) updateData.paid_at = paidAt
   const { data, error } = await supabase
@@ -89,12 +92,12 @@ export async function updateInvoiceStatus(id: string, status: string, paidAt?: s
     .select()
     .single()
   if (error) throw new Error(error.message)
+
   return data as Invoice
 }
 
 export async function getInvoiceSummary() {
   const supabase = await createClient()
-  // Select all fields needed including is_overdue from the view
   const { data, error } = await supabase
     .from('v_invoices')
     .select('status, total, currency, is_overdue') as any

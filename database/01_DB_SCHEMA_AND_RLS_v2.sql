@@ -71,9 +71,9 @@ $$;
 
 CREATE TYPE public.movement_type_enum AS ENUM ('ENTRADA', 'SALIDA', 'TRANSFERENCIA_ENTRADA', 'TRANSFERENCIA_SALIDA', 'AJUSTE');
 CREATE TYPE public.reference_type_enum AS ENUM ('COMPRA', 'VENTA', 'TRANSFERENCIA', 'AJUSTE', 'DEVOLUCION', 'INICIAL', 'PRODUCCION', 'MANUFACTURA');
-CREATE TYPE public.order_status_enum AS ENUM ('BORRADOR', 'CONFIRMADO', 'EN_PROCESO', 'PARCIAL', 'COMPLETADO', 'CANCELADO');
-CREATE TYPE public.delivery_status_enum AS ENUM ('PENDIENTE', 'EN_TRANSITO', 'ENTREGADO', 'DEVUELTO', 'CANCELADO');
-CREATE TYPE public.invoice_status_enum AS ENUM ('BORRADOR', 'EMITIDO', 'PAGADO', 'VENCIDO', 'CANCELADO', 'ANULADO');
+CREATE TYPE public.order_status_enum AS ENUM ('DRAFT', 'CONFIRMED', 'PROCESSING', 'IN_PROGRESS', 'PARTIAL', 'COMPLETED', 'DELIVERED', 'RECEIVED', 'CANCELLED', 'SENT');
+CREATE TYPE public.delivery_status_enum AS ENUM ('PENDING', 'EN_TRANSIT', 'DELIVERED', 'RETURNED', 'CANCELLED');
+CREATE TYPE public.invoice_status_enum AS ENUM ('DRAFT', 'ISSUED', 'PAID', 'OVERDUE', 'CANCELLED', 'VOIDED');
 CREATE TYPE public.payment_method_enum AS ENUM ('EFECTIVO', 'TRANSFERENCIA', 'CREDITO', 'CHEQUE', 'ONLINE');
 CREATE TYPE public.currency_enum AS ENUM ('PEN', 'USD');
 CREATE TYPE public.customer_type_enum AS ENUM ('MINORISTA', 'MAYORISTA', 'DISTRIBUIDOR', 'GOBIERNO', 'OTRO');
@@ -330,7 +330,7 @@ CREATE UNIQUE INDEX idx_customers_ruc_unique ON public.customers(ruc) WHERE dele
 CREATE TABLE IF NOT EXISTS public.purchase_requisitions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'BORRADOR',
+  status TEXT NOT NULL DEFAULT 'DRAFT',
   priority TEXT NOT NULL DEFAULT 'NORMAL',
   needed_by DATE,
   notes TEXT,
@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS public.purchase_orders (
   code TEXT NOT NULL,
   supplier_id UUID NOT NULL REFERENCES public.suppliers(id) ON DELETE RESTRICT,
   requisition_id UUID REFERENCES public.purchase_requisitions(id) ON DELETE SET NULL,
-  status public.order_status_enum NOT NULL DEFAULT 'BORRADOR',
+  status public.order_status_enum NOT NULL DEFAULT 'DRAFT',
   expected_date DATE,
   subtotal NUMERIC(14, 2) NOT NULL DEFAULT 0,
   tax_rate NUMERIC(5, 2) NOT NULL DEFAULT 18.00,
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS public.goods_receipts (
   purchase_order_id UUID NOT NULL REFERENCES public.purchase_orders(id) ON DELETE RESTRICT,
   warehouse_id UUID NOT NULL REFERENCES public.warehouses(id) ON DELETE RESTRICT,
   receipt_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  status TEXT NOT NULL DEFAULT 'COMPLETADO',
+  status TEXT NOT NULL DEFAULT 'COMPLETED',
   notes TEXT,
   received_by UUID REFERENCES public.profiles(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -444,7 +444,7 @@ CREATE TABLE IF NOT EXISTS public.quotations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL,
   customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE RESTRICT,
-  status TEXT NOT NULL DEFAULT 'BORRADOR',
+  status TEXT NOT NULL DEFAULT 'DRAFT',
   valid_until DATE,
   subtotal NUMERIC(14, 2) NOT NULL DEFAULT 0,
   tax_rate NUMERIC(5, 2) NOT NULL DEFAULT 18.00,
@@ -483,7 +483,7 @@ CREATE TABLE IF NOT EXISTS public.sales_orders (
   code TEXT NOT NULL,
   customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE RESTRICT,
   quotation_id UUID REFERENCES public.quotations(id) ON DELETE SET NULL,
-  status public.order_status_enum NOT NULL DEFAULT 'CONFIRMADO',
+  status public.order_status_enum NOT NULL DEFAULT 'CONFIRMED',
   delivery_date DATE,
   warehouse_id UUID REFERENCES public.warehouses(id) ON DELETE RESTRICT,
   subtotal NUMERIC(14, 2) NOT NULL DEFAULT 0,
@@ -527,7 +527,7 @@ CREATE TABLE IF NOT EXISTS public.deliveries (
   sales_order_id UUID NOT NULL REFERENCES public.sales_orders(id) ON DELETE RESTRICT,
   warehouse_id UUID NOT NULL REFERENCES public.warehouses(id) ON DELETE RESTRICT,
   delivery_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  status public.delivery_status_enum NOT NULL DEFAULT 'ENTREGADO',
+  status public.delivery_status_enum NOT NULL DEFAULT 'DELIVERED',
   notes TEXT,
   delivered_by UUID REFERENCES public.profiles(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -598,7 +598,7 @@ CREATE TABLE IF NOT EXISTS public.production_orders (
   code TEXT NOT NULL,
   bom_id UUID NOT NULL REFERENCES public.bill_of_materials(id) ON DELETE RESTRICT,
   warehouse_id UUID NOT NULL REFERENCES public.warehouses(id) ON DELETE RESTRICT,
-  status public.order_status_enum NOT NULL DEFAULT 'BORRADOR',
+  status public.order_status_enum NOT NULL DEFAULT 'DRAFT',
   quantity_planned NUMERIC(12, 3) NOT NULL CHECK (quantity_planned > 0),
   quantity_produced NUMERIC(12, 3) NOT NULL DEFAULT 0,
   planned_start DATE,
@@ -660,7 +660,7 @@ CREATE TABLE IF NOT EXISTS public.invoices (
   invoice_number TEXT NOT NULL,
   customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE RESTRICT,
   sales_order_id UUID REFERENCES public.sales_orders(id) ON DELETE SET NULL,
-  status public.invoice_status_enum NOT NULL DEFAULT 'BORRADOR',
+  status public.invoice_status_enum NOT NULL DEFAULT 'DRAFT',
   issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
   due_date DATE,
   subtotal NUMERIC(14, 2) NOT NULL DEFAULT 0,
@@ -741,6 +741,140 @@ CREATE INDEX IF NOT EXISTS idx_prod_orders_bom ON public.production_orders(bom_i
 CREATE INDEX IF NOT EXISTS idx_invoices_customer ON public.invoices(customer_id) WHERE deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_audit_table ON public.audit_logs(table_name, record_id);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON public.audit_logs(created_at DESC);
+
+CREATE OR REPLACE VIEW public.v_inventory_summary AS
+SELECT
+  i.id,
+  i.product_id,
+  p.sku,
+  p.name AS product_name,
+  p.barcode,
+  i.warehouse_id,
+  w.name AS warehouse_name,
+  i.quantity,
+  i.reserved_quantity,
+  (i.quantity - i.reserved_quantity) AS available_quantity,
+  i.minimum_stock,
+  i.maximum_stock,
+  CASE
+    WHEN i.quantity = 0 THEN 'OUT_OF_STOCK'
+    WHEN i.quantity <= i.minimum_stock THEN 'LOW_STOCK'
+    WHEN i.maximum_stock IS NOT NULL AND i.quantity >= i.maximum_stock THEN 'OVER_STOCK'
+    ELSE 'OK'
+  END AS stock_status,
+  um.abbreviation AS unit,
+  c.name AS category_name,
+  b.name AS brand_name
+FROM public.inventory i
+JOIN public.products p ON p.id = i.product_id
+JOIN public.warehouses w ON w.id = i.warehouse_id
+LEFT JOIN public.unit_measures um ON um.id = p.unit_measure_id
+LEFT JOIN public.categories c ON c.id = p.category_id
+LEFT JOIN public.brands b ON b.id = p.brand_id
+WHERE p.deleted_at IS NULL 
+  AND w.deleted_at IS NULL 
+  AND i.deleted_at IS NULL 
+  AND p.is_active = TRUE 
+  AND w.is_active = TRUE;
+
+CREATE OR REPLACE VIEW public.v_low_stock AS
+SELECT * FROM public.v_inventory_summary
+WHERE stock_status IN ('LOW_STOCK', 'OUT_OF_STOCK')
+ORDER BY quantity ASC;
+
+CREATE OR REPLACE VIEW public.v_purchase_orders AS
+SELECT
+  po.id,
+  po.code,
+  po.status,
+  po.expected_date,
+  po.total,
+  po.currency,
+  po.created_at,
+  po.supplier_id,
+  s.business_name AS supplier_name,
+  s.ruc AS supplier_ruc,
+  pr.full_name AS created_by_name,
+  (SELECT COUNT(*)::INTEGER FROM public.purchase_order_details pod WHERE pod.purchase_order_id = po.id AND pod.deleted_at IS NULL) AS items_count,
+  (SELECT COALESCE(SUM(pod.quantity_received), 0)::NUMERIC FROM public.purchase_order_details pod WHERE pod.purchase_order_id = po.id AND pod.deleted_at IS NULL) AS total_received
+FROM public.purchase_orders po
+JOIN public.suppliers s ON s.id = po.supplier_id
+LEFT JOIN public.profiles pr ON pr.id = po.created_by
+WHERE po.deleted_at IS NULL AND s.deleted_at IS NULL;
+
+CREATE OR REPLACE VIEW public.v_sales_orders AS
+SELECT
+  so.id,
+  so.code,
+  so.status,
+  so.delivery_date,
+  so.total,
+  so.currency,
+  so.created_at,
+  so.customer_id,
+  c.business_name AS customer_name,
+  c.ruc AS customer_ruc,
+  w.name AS warehouse_name,
+  pr.full_name AS created_by_name,
+  (SELECT COUNT(*)::INTEGER FROM public.sales_order_details sod WHERE sod.sales_order_id = so.id AND sod.deleted_at IS NULL) AS items_count
+FROM public.sales_orders so
+JOIN public.customers c ON c.id = so.customer_id
+LEFT JOIN public.warehouses w ON w.id = so.warehouse_id
+LEFT JOIN public.profiles pr ON pr.id = so.created_by
+WHERE so.deleted_at IS NULL AND c.deleted_at IS NULL AND (w.id IS NULL OR w.deleted_at IS NULL);
+
+CREATE OR REPLACE VIEW public.v_production_orders AS
+SELECT
+  po.id,
+  po.code,
+  po.status,
+  po.quantity_planned,
+  po.quantity_produced,
+  po.planned_start,
+  po.planned_end,
+  po.actual_start,
+  po.actual_end,
+  po.created_at,
+  po.warehouse_id,
+  bom.name AS bom_name,
+  bom.version AS bom_version,
+  p.name AS product_name,
+  p.sku AS product_sku,
+  w.name AS warehouse_name,
+  pr.full_name AS created_by_name,
+  ROUND((po.quantity_produced / NULLIF(po.quantity_planned, 0)) * 100, 2) AS completion_pct
+FROM public.production_orders po
+JOIN public.bill_of_materials bom ON bom.id = po.bom_id
+JOIN public.products p ON p.id = bom.product_id
+JOIN public.warehouses w ON w.id = po.warehouse_id
+LEFT JOIN public.profiles pr ON pr.id = po.created_by
+WHERE po.deleted_at IS NULL AND bom.deleted_at IS NULL AND p.deleted_at IS NULL AND w.deleted_at IS NULL;
+
+CREATE OR REPLACE VIEW public.v_invoices AS
+SELECT
+  i.id,
+  i.invoice_series,
+  i.invoice_number,
+  i.invoice_series || '-' || i.invoice_number AS full_number,
+  i.status,
+  i.issue_date,
+  i.due_date,
+  i.total,
+  i.currency,
+  i.payment_method,
+  i.paid_at,
+  i.customer_id,
+  c.business_name AS customer_name,
+  c.ruc AS customer_ruc,
+  pr.full_name AS created_by_name,
+  CASE
+    WHEN i.status = 'ISSUED'::public.invoice_status_enum AND i.due_date < CURRENT_DATE THEN TRUE
+    ELSE FALSE
+  END AS is_overdue
+FROM public.invoices i
+JOIN public.customers c ON c.id = i.customer_id
+LEFT JOIN public.profiles pr ON pr.id = i.created_by
+WHERE i.deleted_at IS NULL AND c.deleted_at IS NULL;
 
 DO $$ DECLARE t TEXT;
 BEGIN
@@ -934,3 +1068,10 @@ INSERT INTO public.roles (name, description, permissions) VALUES
     "inventory_movements": {"leer":true,"crear":true}
   }'::jsonb
 );
+
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated, anon;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO authenticated, anon;

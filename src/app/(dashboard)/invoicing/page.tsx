@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { getInvoices, getInvoiceSummary } from '@/modules/invoicing/services/invoicing.service'
 import { Badge } from '@/components/ui/badge'
 import { PageShell } from '@/shared/components/layout/page-shell'
+import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Facturación' }
 
@@ -83,7 +84,11 @@ async function InvoicingContent({ searchParams }: { searchParams: Awaited<PagePr
               return (
                 <tr key={inv.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 text-center font-medium text-xs text-muted-foreground">{index + 1}</td>
-                  <td className="py-3 px-6 font-mono font-medium text-xs">{inv.full_number}</td>
+                  <td className="py-3 px-6 font-mono font-medium text-xs">
+                    <Link href={`/invoicing/${inv.id}`} className="text-primary hover:underline font-semibold">
+                      {inv.full_number}
+                    </Link>
+                  </td>
                   <td className="py-3 px-6 font-medium text-sm">{inv.customer_name}</td>
                   <td className="py-3 px-6 text-center">
                     <Badge variant={status.variant}>{status.label}</Badge>
@@ -114,7 +119,7 @@ export default async function InvoicingPage({ searchParams }: PageProps) {
   return (
     <PageShell
       registerButton={
-        <Button id="create-invoice-btn" className="gradient-primary text-white border-0">
+        <Button render={<Link href="/invoicing/new" />} id="create-invoice-btn" className="gradient-primary text-white border-0">
           <Plus className="w-4 h-4 mr-2" /> Nueva Factura
         </Button>
       }

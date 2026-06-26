@@ -11,13 +11,13 @@ import { createClient } from '@/shared/lib/supabase/server'
 
 export async function createSalesOrderAction(
   customerId: string,
+  warehouseId: string,
   data: {
     delivery_date?: string
-    warehouse_id?: string
     notes?: string
     tax_rate?: number
     currency?: 'PEN' | 'USD'
-    quotation_id?: string
+    exchange_rate?: number
   },
   details: Array<{
     product_id: string
@@ -30,7 +30,7 @@ export async function createSalesOrderAction(
   const { data: { user } } = await supabase.auth.getUser()
 
   const subtotal = details.reduce((sum, d) => {
-    return sum + d.quantity_ordered * d.unit_price * (1 - (d.discount_pct ?? 0) / 100)
+    return sum + d.quantity_ordered * d.unit_price * (1 - (d.discount_pct || 0) / 100)
   }, 0)
   const taxRate = data.tax_rate ?? 18
   const taxAmount = subtotal * (taxRate / 100)
@@ -40,16 +40,16 @@ export async function createSalesOrderAction(
     const order = await createSalesOrder(
       {
         customer_id: customerId,
-        quotation_id: data.quotation_id,
+        warehouse_id: warehouseId,
         status: 'CONFIRMED',
         delivery_date: data.delivery_date,
-        warehouse_id: data.warehouse_id,
         notes: data.notes,
         subtotal,
         tax_rate: taxRate,
         tax_amount: taxAmount,
         total,
         currency: data.currency ?? 'PEN',
+        exchange_rate: data.exchange_rate ?? 1,
         created_by: user?.id,
       } as any,
       details.map(d => ({
@@ -68,11 +68,21 @@ export async function createSalesOrderAction(
   }
 }
 
+export async function processSalesOrderAction(id: string) {
+  try {
+    const order = await updateSalesOrderStatus(id, 'PROCESSING')
+    revalidatePath('/sales')
+    return { success: true, data: order }
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Error al procesar la orden' }
+  }
+}
+
 export async function cancelSalesOrderAction(id: string) {
   try {
-    await updateSalesOrderStatus(id, 'CANCELLED')
+    const order = await updateSalesOrderStatus(id, 'CANCELLED')
     revalidatePath('/sales')
-    return { success: true }
+    return { success: true, data: order }
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Error al cancelar la orden' }
   }

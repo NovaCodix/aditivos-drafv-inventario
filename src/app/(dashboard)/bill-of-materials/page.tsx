@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getBillsOfMaterials } from '@/modules/manufacturing/services/manufacturing.service'
 import { PageShell } from '@/shared/components/layout/page-shell'
+import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Listas de Materiales' }
 
@@ -70,7 +71,7 @@ export default async function BillOfMaterialsPage({ searchParams }: PageProps) {
   return (
     <PageShell
       registerButton={
-        <Button id="create-bom-btn" className="gradient-primary text-white border-0">
+        <Button render={<Link href="/bill-of-materials/new" />} id="create-bom-btn" className="gradient-primary text-white border-0">
           <Plus className="w-4 h-4 mr-2" /> Nueva Lista
         </Button>
       }

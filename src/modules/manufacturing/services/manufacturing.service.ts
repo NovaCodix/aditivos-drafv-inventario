@@ -6,8 +6,6 @@ import type {
 } from '@/shared/types/database.types'
 import { registerMovement } from '@/modules/stock-movements/services/movements.service'
 
-// ─── Bill of Materials ────────────────────────────────────────────────────────
-
 export async function getBillsOfMaterials(filters: { product_id?: string; is_active?: boolean; page?: number; pageSize?: number } = {}) {
   const supabase = await createClient()
   const { product_id, is_active, page = 1, pageSize = 20 } = filters
@@ -71,8 +69,6 @@ export async function createBom(
   return bom as BillOfMaterials
 }
 
-// ─── Production Orders ────────────────────────────────────────────────────────
-
 export async function getProductionOrders(filters: { status?: string; page?: number; pageSize?: number } = {}) {
   const supabase = await createClient()
   const { status, page = 1, pageSize = 20 } = filters
@@ -89,14 +85,36 @@ export async function getProductionOrders(filters: { status?: string; page?: num
 
   const { data, error, count } = await query
   if (error) throw new Error(error.message)
+
   return { data: (data || []) as ProductionOrderView[], count: count || 0 }
+}
+
+export async function getProductionOrderById(id: string) {
+  const supabase = await createClient()
+  const [orderResult, consumptionsResult] = await Promise.all([
+    supabase
+      .from('production_orders')
+      .select(`*, product:products(id, name, sku), bom:bill_of_materials(id, name, version), warehouse:warehouses(id, name)`)
+      .eq('id', id)
+      .single(),
+    supabase
+      .from('production_order_consumptions')
+      .select(`*, product:products(id, name, sku)`)
+      .eq('production_order_id', id)
+  ])
+
+  if (orderResult.error) return null
+
+  return {
+    order: orderResult.data as ProductionOrder & { product: any; bom: any; warehouse: any },
+    consumptions: (consumptionsResult.data || []) as any[]
+  }
 }
 
 export async function createProductionOrder(dto: InsertDto<'production_orders'>) {
   const supabase = await createClient()
   const { data: code } = await supabase.rpc('next_document_code', { p_module: 'production_orders' })
 
-  // Pre-populate consumptions from BOM
   const bomResult = await getBomById(dto.bom_id)
   if (!bomResult) throw new Error('BOM no encontrado')
 
@@ -107,7 +125,6 @@ export async function createProductionOrder(dto: InsertDto<'production_orders'>)
     .single()
   if (error) throw new Error(error.message)
 
-  // Create planned consumptions from BOM items
   const consumptions = bomResult.items.map(item => ({
     production_order_id: order.id,
     product_id: item.product_id,
@@ -125,6 +142,7 @@ export async function createProductionOrder(dto: InsertDto<'production_orders'>)
 
 export async function startProductionOrder(id: string) {
   const supabase = await createClient()
+
   const { data, error } = await supabase
     .from('production_orders')
     .update({ status: 'IN_PROGRESS', actual_start: new Date().toISOString() } as any)
@@ -132,6 +150,7 @@ export async function startProductionOrder(id: string) {
     .select()
     .single()
   if (error) throw new Error(error.message)
+
   return data as ProductionOrder
 }
 
@@ -146,7 +165,6 @@ export async function completeProductionOrder(
 ) {
   const supabase = await createClient()
 
-  // Register EXIT movements for each consumption
   for (const c of params.consumptions) {
     const movementId = await registerMovement({
       product_id: c.product_id,
@@ -154,7 +172,7 @@ export async function completeProductionOrder(
       batch_id: c.batch_id,
       movement_type: 'EXIT',
       quantity: c.quantity_consumed,
-      unit_cost: c.unit_cost,
+      unit_cost: c.unit_cost || 0,
       reference_type: 'PRODUCTION',
       reference_id: id,
       notes: `Consumo producción`,
@@ -173,7 +191,6 @@ export async function completeProductionOrder(
       .eq('id', c.consumption_id)
   }
 
-  // Register ENTRY movements for each output
   const outputRows = []
   for (const o of params.outputs) {
     const movementId = await registerMovement({
@@ -204,8 +221,8 @@ export async function completeProductionOrder(
   const { error: outputError } = await supabase.from('production_order_outputs').insert(outputRows as any)
   if (outputError) throw new Error(outputError.message)
 
-  // Close the production order
   const totalProduced = params.outputs.reduce((sum, o) => sum + o.quantity_produced, 0)
+
   const { data, error } = await supabase
     .from('production_orders')
     .update({
@@ -217,5 +234,6 @@ export async function completeProductionOrder(
     .select()
     .single()
   if (error) throw new Error(error.message)
+
   return data as ProductionOrder
 }

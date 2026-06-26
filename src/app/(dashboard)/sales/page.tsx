@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { getSalesOrders } from '@/modules/sales/services/sales.service'
 import { Badge } from '@/components/ui/badge'
 import { PageShell } from '@/shared/components/layout/page-shell'
+import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Ventas' }
 
@@ -60,7 +61,11 @@ async function SalesContent({ searchParams }: { searchParams: Awaited<PageProps[
             return (
               <tr key={order.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 text-center font-medium text-xs text-muted-foreground">{index + 1}</td>
-                <td className="py-3 px-6 font-mono font-medium text-xs">{order.code}</td>
+                <td className="py-3 px-6 font-mono font-medium text-xs">
+                  <Link href={`/sales/${order.id}`} className="text-primary hover:underline font-semibold">
+                    {order.code}
+                  </Link>
+                </td>
                 <td className="py-3 px-6 font-medium text-sm">{order.customer_name}</td>
                 <td className="py-3 px-6 text-center">
                   <Badge variant={status.variant}>{status.label}</Badge>
@@ -89,7 +94,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
   return (
     <PageShell
       registerButton={
-        <Button id="create-sale-btn" className="gradient-primary text-white border-0">
+        <Button render={<Link href="/sales/new" />} id="create-sale-btn" className="gradient-primary text-white border-0">
           <Plus className="w-4 h-4 mr-2" /> Nueva Orden de Venta
         </Button>
       }
