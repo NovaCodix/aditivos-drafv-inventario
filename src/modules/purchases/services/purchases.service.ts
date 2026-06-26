@@ -189,7 +189,7 @@ export async function createGoodsReceipt(
 
 export async function getGoodsReceipts(purchaseOrderId?: string) {
   const supabase = await createClient()
-  let query = supabase
+  let query: any = supabase
     .from('goods_receipts')
     .select(`*, purchase_order:purchase_orders(code), warehouse:warehouses(name)`)
     .order('created_at', { ascending: false })

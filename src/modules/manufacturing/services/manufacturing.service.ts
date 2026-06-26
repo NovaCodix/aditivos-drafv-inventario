@@ -10,7 +10,7 @@ export async function getBillsOfMaterials(filters: { product_id?: string; is_act
   const supabase = await createClient()
   const { product_id, is_active, page = 1, pageSize = 20 } = filters
 
-  let query = supabase
+  let query: any = supabase
     .from('bill_of_materials')
     .select(`*, product:products(id, name, sku), unit_measure:unit_measures(abbreviation)`, { count: 'exact' })
 
@@ -73,7 +73,7 @@ export async function getProductionOrders(filters: { status?: string; page?: num
   const supabase = await createClient()
   const { status, page = 1, pageSize = 20 } = filters
 
-  let query = supabase
+  let query: any = supabase
     .from('v_production_orders')
     .select('*', { count: 'exact' })
 

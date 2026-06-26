@@ -15,7 +15,7 @@ export async function getInvoices(filters: InvoiceFilters = {}) {
   const supabase = await createClient()
   const { search, customer_id, status, date_from, date_to, page = 1, pageSize = 20 } = filters
 
-  let query = supabase
+  let query: any = supabase
     .from('v_invoices')
     .select('*', { count: 'exact' })
 

@@ -22,7 +22,7 @@ export async function getQuotations(filters: { customer_id?: string; status?: st
   const supabase = await createClient()
   const { customer_id, status, page = 1, pageSize = 20 } = filters
 
-  let query = supabase
+  let query: any = supabase
     .from('quotations')
     .select(`*, customer:customers(id, business_name, ruc)`, { count: 'exact' })
 
@@ -67,7 +67,7 @@ export async function getSalesOrders(filters: SalesOrderFilters = {}) {
   const supabase = await createClient()
   const { search, customer_id, status, date_from, date_to, page = 1, pageSize = 20 } = filters
 
-  let query = supabase
+  let query: any = supabase
     .from('v_sales_orders')
     .select('*', { count: 'exact' })
 
